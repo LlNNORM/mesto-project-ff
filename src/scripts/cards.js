@@ -30,3 +30,5 @@ const initialCards = [
       alt:  "Фото Байкала",
     }
 ];
+
+export default initialCards;
