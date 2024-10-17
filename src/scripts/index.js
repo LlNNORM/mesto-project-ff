@@ -7,21 +7,23 @@ const profileEditButton = document.querySelector(".profile__edit-button");
 const placesAddButton = document.querySelector(".profile__add-button");
 const popupCloseButtons = document.querySelectorAll(".popup__close");
 const profileEditPopup = document.querySelector(".popup_type_edit");
-const placesAddPopup = document.querySelector(".popup_type_new-card");
+const placeAddPopup = document.querySelector(".popup_type_new-card");
 const imagePopup = document.querySelector(".popup_type_image");
 
-
-
-initialCards.forEach((cardData)=> {
-  const card = createCard(cardData, deleteCard, openPopup);
-  return cardsContainer.append(card);
-});
+renderCards(initialCards);
 
 profileEditButton.addEventListener('click', (e) => { 
   openPopup(profileEditPopup);
 });
-placesAddButton.addEventListener('click', () => openPopup(placesAddPopup));
+placesAddButton.addEventListener('click', () => openPopup(placeAddPopup));
 popupCloseButtons.forEach(button => button.addEventListener('click', (evt) => closePopupByCross(evt.target)));
+
+function renderCards (cardList) {
+  cardList.forEach((cardData)=> {
+    const card = createCard(cardData, deleteCard, openPopup);
+    return cardsContainer.append(card);
+  });
+}
 
 function createCard(cardData, deleteCardFunction, openPopupFunction) {
   const card = cardTemplate.querySelector(".card").cloneNode(true);
@@ -58,20 +60,44 @@ function closePopup (popup) {
   document.removeEventListener('keydown', closePopup);
 }
 
-const formElement = document.forms.editProfile
-const nameInput = formElement.elements.name
-const jobInput = formElement.elements.description
+const profileEditFormElement = document.forms.editProfile
+const nameInput = profileEditFormElement.elements.name
+const jobInput = profileEditFormElement.elements.description
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
 nameInput.value=profileTitle.textContent;
 jobInput.value=profileDescription.textContent;
 
-function handleFormSubmit(evt) {
+function handleEditFormSubmit(evt) {
     evt.preventDefault();
     profileTitle.textContent=nameInput.value;
     profileDescription.textContent=jobInput.value;
     closePopup(profileEditPopup);
 }
 
-formElement.addEventListener('submit', handleFormSubmit); 
+profileEditFormElement.addEventListener('submit', handleEditFormSubmit); 
+
+
+
+const newPlaceFormElement = document.forms.newPlace
+const placeInput = newPlaceFormElement.elements.placeName
+const linkInput = newPlaceFormElement.elements.link
+let updatedCardList = initialCards;
+
+function handleAddFormSubmit(evt) {
+    evt.preventDefault();
+    profileTitle.textContent=nameInput.value;
+    profileDescription.textContent=jobInput.value;
+    updatedCardList = [{ name: placeInput.value,
+                        link: linkInput.value ,
+                        alt:`${placeInput.value} фото`}, 
+                        ...updatedCardList];
+    cardsContainer.innerHTML='';
+    renderCards(updatedCardList);
+    placeInput.value = '';
+    linkInput.value = '';
+    closePopup(placeAddPopup);
+}
+
+newPlaceFormElement.addEventListener('submit', handleAddFormSubmit); 

@@ -9,6 +9,9 @@
   font-family: 'Inter', Arial, sans-serif;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border-radius: 10px;
   position: relative;
   overflow: hidden;
