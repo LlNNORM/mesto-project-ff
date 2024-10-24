@@ -74,9 +74,9 @@ function renderCards(cardList, cardsContainer, openImagePopupFunction, positionB
   });
 }
 
-function openImagePopup(target, title) {
+function openImagePopup(link, title) {
   openPopup(imagePopup);
-  image.src = target.src;
-  image.alt = target.alt;
+  image.src = link;
+  image.alt = `${title} фото`;
   imageDescription.textContent = title;
 }

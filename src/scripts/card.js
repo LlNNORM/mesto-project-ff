@@ -13,8 +13,8 @@ function createCard(
   cardImage.src = cardData["link"];
   cardImage.alt = cardData["alt"];
   cardTitle.textContent = cardData["name"];
-  cardImage.addEventListener("click", (evt) =>
-    openImagePopupFunction(evt.target, cardTitle.textContent)
+  cardImage.addEventListener("click", () =>
+    openImagePopupFunction(cardData["link"], cardTitle.textContent)
   );
   deleteButton.addEventListener("click", () => deleteCardFunction(card));
   likeButton.addEventListener("click", () => likeCardFunction(likeButton));
