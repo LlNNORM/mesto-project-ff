@@ -15,9 +15,11 @@ function handleEditFormSubmit(
 function handleAddFormSubmit(
   evt,
   cardsContainer,
+  newPlaceFormElement,
   placeInput,
   linkInput,
   renderCards,
+  openImagePopupFunction,
   closePopup,
   placeAddPopup
 ) {
@@ -29,9 +31,8 @@ function handleAddFormSubmit(
       alt: `${placeInput.value} фото`,
     },
   ];
-  renderCards(newCard, cardsContainer, true);
-  placeInput.value = "";
-  linkInput.value = "";
+  renderCards(newCard, cardsContainer, openImagePopupFunction, true);
+  newPlaceFormElement.reset();
   closePopup(placeAddPopup);
 }
 

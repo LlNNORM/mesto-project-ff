@@ -1,18 +1,8 @@
-import { openImagePopup } from "./popup";
-
-function renderCards(cardList, cardsContainer, positionBefore) {
-  cardList.forEach((cardData) => {
-    const card = createCard(cardData, deleteCard, likeCard, openImagePopup);
-    if (positionBefore) return cardsContainer.prepend(card);
-    else return cardsContainer.append(card);
-  });
-}
-
 function createCard(
   cardData,
   deleteCardFunction,
   likeCardFunction,
-  openPopupFunction
+  openImagePopupFunction
 ) {
   const cardTemplate = document.querySelector("#card-template").content;
   const card = cardTemplate.querySelector(".card").cloneNode(true);
@@ -24,7 +14,7 @@ function createCard(
   cardImage.alt = cardData["alt"];
   cardTitle.textContent = cardData["name"];
   cardImage.addEventListener("click", (evt) =>
-    openPopupFunction(evt.target, cardTitle.textContent)
+    openImagePopupFunction(evt.target, cardTitle.textContent)
   );
   deleteButton.addEventListener("click", () => deleteCardFunction(card));
   likeButton.addEventListener("click", () => likeCardFunction(likeButton));
@@ -39,4 +29,4 @@ function likeCard(likeButton) {
   likeButton.classList.toggle("card__like-button_is-active");
 }
 
-export { renderCards };
+export { createCard, deleteCard, likeCard };

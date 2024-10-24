@@ -1,17 +1,6 @@
 function openPopup(popupType) {
   popupType.classList.add("popup_is-opened");
-  popupType.addEventListener("click", closePopupByOverlay);
   document.addEventListener("keydown", closePopupByEsc);
-}
-
-function openImagePopup(target, title) {
-  const imagePopup = document.querySelector(".popup_type_image");
-  openPopup(imagePopup);
-  const image = document.querySelector(".popup__image");
-  const imageDescription = document.querySelector(".popup__caption");
-  image.src = target.src;
-  image.alt = target.alt;
-  imageDescription.textContent = title;
 }
 
 function closePopup(popup) {
@@ -34,4 +23,4 @@ function closePopupByOverlay(evt) {
   evt.target === evt.currentTarget ? closePopup(openedPopup) : undefined;
 }
 
-export { openPopup, openImagePopup, closePopupByCross, closePopup };
+export { openPopup, closePopupByCross, closePopupByOverlay, closePopup };
