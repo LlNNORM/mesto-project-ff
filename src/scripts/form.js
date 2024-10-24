@@ -1,28 +1,30 @@
-function handleEditFormSubmit(
-  evt,
-  profileTitle,
-  profileDescription,
-  nameInput,
-  jobInput,
-  closePopup,
-  profileEditPopup
-) {
+function handleEditFormSubmit(parametersObj) {
+  const {
+    evt,
+    profileTitle,
+    profileDescription,
+    nameInput,
+    jobInput,
+    closePopup,
+    profileEditPopup,
+  } = parametersObj;
   evt.preventDefault();
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   closePopup(profileEditPopup);
 }
-function handleAddFormSubmit(
-  evt,
-  cardsContainer,
-  newPlaceFormElement,
-  placeInput,
-  linkInput,
-  renderCards,
-  openImagePopupFunction,
-  closePopup,
-  placeAddPopup
-) {
+function handleAddFormSubmit(parametersObj) {
+  const {
+    evt,
+    cardsContainer,
+    newPlaceFormElement,
+    placeInput,
+    linkInput,
+    renderCards,
+    openImagePopup,
+    closePopup,
+    placeAddPopup,
+  } = parametersObj;
   evt.preventDefault();
   const newCard = [
     {
@@ -31,7 +33,12 @@ function handleAddFormSubmit(
       alt: `${placeInput.value} фото`,
     },
   ];
-  renderCards(newCard, cardsContainer, openImagePopupFunction, true);
+  renderCards({
+    cardList: newCard,
+    cardsContainer,
+    openImagePopup,
+    positionBefore: true,
+  });
   newPlaceFormElement.reset();
   closePopup(placeAddPopup);
 }

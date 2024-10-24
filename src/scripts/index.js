@@ -1,7 +1,12 @@
 import "../pages/index.css";
 import initialCards from "./cards";
 import { createCard, deleteCard, likeCard } from "./card";
-import { openPopup, closePopupByCross, closePopupByOverlay, closePopup } from "./popup";
+import {
+  openPopup,
+  closePopupByCross,
+  closePopupByOverlay,
+  closePopup,
+} from "./popup";
 import { handleEditFormSubmit, handleAddFormSubmit } from "./form";
 
 const cardsContainer = document.querySelector(".places__list");
@@ -23,12 +28,16 @@ const newPlaceFormElement = document.forms.newPlace;
 const placeInput = newPlaceFormElement.elements.placeName;
 const linkInput = newPlaceFormElement.elements.link;
 
-
-renderCards(initialCards, cardsContainer, openImagePopup, false);
+renderCards({
+  cardList: initialCards,
+  cardsContainer,
+  openImagePopup,
+  positionBefore: false,
+});
 popups.forEach((popup) => {
   popup.classList.add("popup_is-animated");
-  popup.addEventListener("click", closePopupByOverlay)
-})
+  popup.addEventListener("mousedown", closePopupByOverlay);
+});
 profileEditButton.addEventListener("click", () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
@@ -41,18 +50,18 @@ popupCloseButtons.forEach((button) =>
 );
 
 profileEditFormElement.addEventListener("submit", (evt) =>
-  handleEditFormSubmit(
+  handleEditFormSubmit({
     evt,
     profileTitle,
     profileDescription,
     nameInput,
     jobInput,
     closePopup,
-    profileEditPopup
-  )
+    profileEditPopup,
+  })
 );
 newPlaceFormElement.addEventListener("submit", (evt) =>
-  handleAddFormSubmit(
+  handleAddFormSubmit({
     evt,
     cardsContainer,
     newPlaceFormElement,
@@ -61,14 +70,16 @@ newPlaceFormElement.addEventListener("submit", (evt) =>
     renderCards,
     openImagePopup,
     closePopup,
-    placeAddPopup
-  )
+    placeAddPopup,
+  })
 );
 
+function renderCards(parametersObj) {
+  const { cardList, cardsContainer, openImagePopup, positionBefore } =
+    parametersObj;
 
-function renderCards(cardList, cardsContainer, openImagePopupFunction, positionBefore) {
   cardList.forEach((cardData) => {
-    const card = createCard(cardData, deleteCard, likeCard, openImagePopupFunction);
+    const card = createCard({ cardData, deleteCard, likeCard, openImagePopup });
     if (positionBefore) return cardsContainer.prepend(card);
     else return cardsContainer.append(card);
   });
