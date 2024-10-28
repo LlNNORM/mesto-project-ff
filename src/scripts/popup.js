@@ -19,8 +19,7 @@ function closePopupByEsc(evt) {
 }
 
 function closePopupByOverlay(evt) {
-  const openedPopup = document.querySelector(".popup_is-opened");
-  evt.target === evt.currentTarget ? closePopup(openedPopup) : undefined;
+  evt.target === evt.currentTarget ? closePopup(evt.target) : undefined;
 }
 
 export { openPopup, closePopupByCross, closePopupByOverlay, closePopup };
