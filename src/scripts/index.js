@@ -91,3 +91,29 @@ function openImagePopup(link, title) {
   image.alt = `${title} фото`;
   imageDescription.textContent = title;
 }
+
+const formError = profileEditPopup.querySelector(`.${nameInput.id}-error`);
+
+
+const showInputError = (element, errorMessage) => {
+  element.classList.add('popup__input_type_error');
+  formError.textContent = errorMessage;
+  formError.classList.add('popup__input-error_active');
+};
+
+const hideInputError = (element) => {
+  element.classList.remove('popup__input_type_error');
+  formError.classList.remove('popup__input-error_active');
+  formError.textContent = '';
+};
+
+const isValid = () => {
+  if (!nameInput.validity.valid) {
+    showInputError(nameInput, nameInput.validationMessage);
+  } else {
+    hideInputError(nameInput);
+  }
+};
+
+nameInput.addEventListener('input', isValid); 
+// placeAddPopup.addEventListener('input', isValid); 

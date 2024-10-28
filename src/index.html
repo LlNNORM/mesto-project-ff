@@ -36,9 +36,11 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" name="editProfile">
-        <input type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" required>
-        <input type="text" name="description" class="popup__input popup__input_type_description" placeholder="Занятие" required>
+      <form class="popup__form" name="editProfile" novalidate>
+        <input id="name__input" type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" minlength="2" maxlength="40" required>
+        <span class="name__input-error popup__input-error"></span> 
+        <input type="text" name="description" class="popup__input popup__input_type_description" placeholder="Занятие" minlength="2" maxlength="200" required>
+        <span class="popup__input-error"></span> 
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
@@ -47,7 +49,7 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Новое место</h3>
-      <form class="popup__form" name="newPlace">
+      <form class="popup__form" name="newPlace" novalidate>
         <input type="text" name="placeName" class="popup__input popup__input_type_card-name" placeholder="Название" required>
         <input type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
         <button type="submit" class="button popup__button">Сохранить</button>
