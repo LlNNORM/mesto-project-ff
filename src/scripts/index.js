@@ -19,13 +19,13 @@ const placeAddPopup = document.querySelector(".popup_type_new-card");
 const imagePopup = document.querySelector(".popup_type_image");
 const image = document.querySelector(".popup__image");
 const imageDescription = document.querySelector(".popup__caption");
-const profileEditFormElement = document.forms.editProfile;
+const profileEditFormElement = document.forms["edit-profile"];
 const nameInput = profileEditFormElement.elements.name;
 const jobInput = profileEditFormElement.elements.description;
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
-const newPlaceFormElement = document.forms.newPlace;
-const placeInput = newPlaceFormElement.elements.placeName;
+const newPlaceFormElement = document.forms["new-place"];
+const placeInput = newPlaceFormElement.elements["place-name"];
 const linkInput = newPlaceFormElement.elements.link;
 
 renderCards({
@@ -74,6 +74,8 @@ newPlaceFormElement.addEventListener("submit", (evt) =>
   })
 );
 
+enableValidation();
+
 function renderCards(parametersObj) {
   const { cardList, cardsContainer, openImagePopup, positionBefore } =
     parametersObj;
@@ -92,28 +94,90 @@ function openImagePopup(link, title) {
   imageDescription.textContent = title;
 }
 
-const formError = profileEditPopup.querySelector(`.${nameInput.id}-error`);
+// const formError = profileEditPopup.querySelector(`.${nameInput.id}-error`);
 
+// const showInputError = (element, errorMessage) => {
+//   element.classList.add('popup__input_type_error');
+//   formError.textContent = errorMessage;
+//   formError.classList.add('popup__input-error_active');
+// };
 
-const showInputError = (element, errorMessage) => {
-  element.classList.add('popup__input_type_error');
-  formError.textContent = errorMessage;
-  formError.classList.add('popup__input-error_active');
-};
+// const hideInputError = (element) => {
+//   element.classList.remove('popup__input_type_error');
+//   formError.classList.remove('popup__input-error_active');
+//   formError.textContent = '';
+// };
 
-const hideInputError = (element) => {
-  element.classList.remove('popup__input_type_error');
-  formError.classList.remove('popup__input-error_active');
-  formError.textContent = '';
-};
+// const isValid = () => {
+//   if (!nameInput.validity.valid) {
+//     showInputError(nameInput, nameInput.validationMessage);
+//   } else {
+//     hideInputError(nameInput);
+//   }
+// };
 
-const isValid = () => {
-  if (!nameInput.validity.valid) {
-    showInputError(nameInput, nameInput.validationMessage);
+function enableValidation() {
+  const formList = Array.from(document.querySelectorAll(".popup__form"));
+  formList.forEach((formElement) => {
+    setEventListeners(formElement);
+  });
+}
+
+function setEventListeners(formElement) {
+  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
+  const buttonElement = formElement.querySelector(".popup__button");
+  toggleButtonState(inputList, buttonElement);
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener("input", () => {
+      isValid(formElement, inputElement);
+      toggleButtonState(inputList, buttonElement);
+    });
+  });
+}
+
+function isValid(formElement, inputElement) {
+  if (inputElement.validity.patternMismatch) {
+    // встроенный метод setCustomValidity принимает на вход строку
+    // и заменяет ею стандартное сообщение об ошибке
+    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
-    hideInputError(nameInput);
+    // если передать пустую строку, то будут доступны
+    // стандартные браузерные сообщения
+    inputElement.setCustomValidity("");
   }
-};
 
-nameInput.addEventListener('input', isValid); 
-// placeAddPopup.addEventListener('input', isValid); 
+  if (!inputElement.validity.valid) {
+    showInputError(formElement, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(formElement, inputElement);
+  }
+}
+function toggleButtonState(inputList, buttonElement) {
+  if (hasInvalidInput(inputList)) {
+    buttonElement.disabled = true;
+    buttonElement.classList.add("form__submit_inactive");
+  } else {
+    buttonElement.disabled = false;
+    buttonElement.classList.remove("form__submit_inactive");
+  }
+}
+
+function hasInvalidInput(inputList) {
+  return inputList.some((inputElement) => {
+    return !inputElement.validity.valid;
+  });
+}
+
+function showInputError(formElement, inputElement, errorMessage) {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.add("popup__input_type_error");
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add("popup__input-error_active");
+}
+
+function hideInputError(formElement, inputElement) {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.remove("popup__input_type_error");
+  errorElement.classList.remove("popup__input-error_active");
+  errorElement.textContent = "";
+}
