@@ -8,6 +8,7 @@ import {
   closePopup,
 } from "./popup";
 import { handleEditFormSubmit, handleAddFormSubmit } from "./form";
+import { enableValidation, hideInputError } from "./validation";
 
 const cardsContainer = document.querySelector(".places__list");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -22,8 +23,9 @@ const imageDescription = document.querySelector(".popup__caption");
 const profileEditFormElement = document.forms["edit-profile"];
 const nameInput = profileEditFormElement.elements.name;
 const jobInput = profileEditFormElement.elements.description;
-const profileTitle = document.querySelector(".profile__title");
-const profileDescription = document.querySelector(".profile__description");
+const profileImage = document.querySelector(".profile__image");
+let profileTitle = document.querySelector(".profile__title");
+let profileDescription = document.querySelector(".profile__description");
 const newPlaceFormElement = document.forms["new-place"];
 const placeInput = newPlaceFormElement.elements["place-name"];
 const linkInput = newPlaceFormElement.elements.link;
@@ -34,17 +36,31 @@ renderCards({
   openImagePopup,
   positionBefore: false,
 });
+
 popups.forEach((popup) => {
   popup.classList.add("popup_is-animated");
   popup.addEventListener("mousedown", closePopupByOverlay);
 });
+
 profileEditButton.addEventListener("click", () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
+  [nameInput, jobInput].forEach((inputElement) => {
+    hideInputError(profileEditFormElement, inputElement);
+  });
   openPopup(profileEditPopup);
+  enableValidation(profileEditFormElement);
 });
 
-placesAddButton.addEventListener("click", () => openPopup(placeAddPopup));
+placesAddButton.addEventListener("click", () => {
+  newPlaceFormElement.reset();
+  [placeInput, linkInput].forEach((inputElement) => {
+    hideInputError(newPlaceFormElement, inputElement);
+  });
+  openPopup(placeAddPopup);
+  enableValidation(newPlaceFormElement);
+});
+
 popupCloseButtons.forEach((button) =>
   button.addEventListener("click", closePopupByCross)
 );
@@ -74,7 +90,18 @@ newPlaceFormElement.addEventListener("submit", (evt) =>
   })
 );
 
-enableValidation();
+
+
+async function setProfileData() {
+  const profileData = await getUserData();
+  profileImage.style = `background-image: url(${profileData['avatar']});` ;
+  profileTitle.textContent= profileData['name'];
+  profileDescription.textContent=profileData['about']
+}
+setProfileData()
+getData();
+getUserData()
+
 
 function renderCards(parametersObj) {
   const { cardList, cardsContainer, openImagePopup, positionBefore } =
@@ -94,90 +121,28 @@ function openImagePopup(link, title) {
   imageDescription.textContent = title;
 }
 
-// const formError = profileEditPopup.querySelector(`.${nameInput.id}-error`);
-
-// const showInputError = (element, errorMessage) => {
-//   element.classList.add('popup__input_type_error');
-//   formError.textContent = errorMessage;
-//   formError.classList.add('popup__input-error_active');
-// };
-
-// const hideInputError = (element) => {
-//   element.classList.remove('popup__input_type_error');
-//   formError.classList.remove('popup__input-error_active');
-//   formError.textContent = '';
-// };
-
-// const isValid = () => {
-//   if (!nameInput.validity.valid) {
-//     showInputError(nameInput, nameInput.validationMessage);
-//   } else {
-//     hideInputError(nameInput);
-//   }
-// };
-
-function enableValidation() {
-  const formList = Array.from(document.querySelectorAll(".popup__form"));
-  formList.forEach((formElement) => {
-    setEventListeners(formElement);
-  });
+function getData() {
+  return fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
+    headers: {
+      authorization: '0e54a225-fa4c-4f04-a036-c9ec4e520337'
+    }
+  })
+    .then(res => res.json())
+    .then((result) => {
+      console.log(result);
+      
+    }); 
 }
 
-function setEventListeners(formElement) {
-  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
-  const buttonElement = formElement.querySelector(".popup__button");
-  toggleButtonState(inputList, buttonElement);
-  inputList.forEach((inputElement) => {
-    inputElement.addEventListener("input", () => {
-      isValid(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
-    });
-  });
-}
-
-function isValid(formElement, inputElement) {
-  if (inputElement.validity.patternMismatch) {
-    // встроенный метод setCustomValidity принимает на вход строку
-    // и заменяет ею стандартное сообщение об ошибке
-    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-  } else {
-    // если передать пустую строку, то будут доступны
-    // стандартные браузерные сообщения
-    inputElement.setCustomValidity("");
-  }
-
-  if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage);
-  } else {
-    hideInputError(formElement, inputElement);
-  }
-}
-function toggleButtonState(inputList, buttonElement) {
-  if (hasInvalidInput(inputList)) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add("form__submit_inactive");
-  } else {
-    buttonElement.disabled = false;
-    buttonElement.classList.remove("form__submit_inactive");
-  }
-}
-
-function hasInvalidInput(inputList) {
-  return inputList.some((inputElement) => {
-    return !inputElement.validity.valid;
-  });
-}
-
-function showInputError(formElement, inputElement, errorMessage) {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add("popup__input_type_error");
-  errorElement.textContent = errorMessage;
-  errorElement.classList.add("popup__input-error_active");
-}
-
-function hideInputError(formElement, inputElement) {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove("popup__input_type_error");
-  errorElement.classList.remove("popup__input-error_active");
-  errorElement.textContent = "";
+function getUserData() {
+  return fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
+    headers: {
+      authorization: '0e54a225-fa4c-4f04-a036-c9ec4e520337'
+    }
+  })
+    .then(res => res.json())
+    .then((result) => {
+      console.log(result);
+      return result;
+    }); 
 }

@@ -43,4 +43,4 @@ function handleAddFormSubmit(parametersObj) {
   closePopup(placeAddPopup);
 }
 
-export { handleEditFormSubmit, handleAddFormSubmit };
+export { handleEditFormSubmit, handleAddFormSubmit};
