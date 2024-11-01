@@ -65,6 +65,16 @@
       <p class="popup__caption"></p>
     </div>
   </div>
+  <div class="popup popup_type_delete">
+    <div class="popup__content popup__content_content_confirmation">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Подтвердить удаление?</h3>
+      <button type="button" class="button popup__button popup__button_type_confirmation">Да, определенно</button>
+      <button type="button" class="button popup__button popup__button_type_confirmation">Нет, дать заднюю</button>
+    </div>
+  </div>
+    
+  </div>
 </div>
 <template id="card-template">
   <li class="places__item card">
@@ -73,7 +83,10 @@
     <div class="card__description">
       <h2 class="card__title">
       </h2>
-      <button type="button" class="card__like-button"></button>
+      <div class="card__like-wrapper">
+        <button type="button" class="card__like-button"></button>
+        <div class="card__like-counter"></div> 
+      </div>
     </div>
   </li>
 </template>

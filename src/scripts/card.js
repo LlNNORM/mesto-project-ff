@@ -1,19 +1,34 @@
 function createCard(parametersObj) {
-  const { cardData, deleteCard, likeCard, openImagePopup } = parametersObj;
+  const { cardData, cardDeletePopup, openPopup, openImagePopup, likeCard, userId } = parametersObj;
   const cardTemplate = document.querySelector("#card-template").content;
   const card = cardTemplate.querySelector(".card").cloneNode(true);
-  const deleteButton = card.querySelector(".card__delete-button");
+  
   const likeButton = card.querySelector(".card__like-button");
+  let likeCounter = card.querySelector(".card__like-counter");
+  const likeList = cardData["likes"] ? cardData["likes"]:[];
+  let liked = isLiked(likeList, userId);
   const cardImage = card.querySelector(".card__image");
   const cardTitle = card.querySelector(".card__title");
+  const cardId = cardData["_id"] ? cardData["_id"] : null;
+
+  if (cardData["owner"]["_id"]===userId) {
+    const deleteButton = card.querySelector(".card__delete-button");
+    deleteButton.classList.add("card__delete-button-visible");
+    deleteButton.addEventListener("click", () => openPopup(cardDeletePopup));
+  }
+  
+  if (liked) {
+    likeButton.classList.add("card__like-button_is-active");
+  }
+  
   cardImage.src = cardData["link"];
-  cardImage.alt = cardData["alt"];
+  cardImage.alt = `${cardData["name"]} фото`;
   cardTitle.textContent = cardData["name"];
+  likeCounter.textContent = cardData["likes"].length;
   cardImage.addEventListener("click", () =>
     openImagePopup(cardData["link"], cardTitle.textContent)
   );
-  deleteButton.addEventListener("click", () => deleteCard(card));
-  likeButton.addEventListener("click", () => likeCard(likeButton));
+  likeButton.addEventListener("click", () => likeCard({likeButton, likeCounter, cardId, liked}).then(res=> liked=res));
   return card;
 }
 
@@ -21,8 +36,8 @@ function deleteCard(card) {
   card.remove();
 }
 
-function likeCard(likeButton) {
-  likeButton.classList.toggle("card__like-button_is-active");
+function isLiked(likeList, userId) {
+  return likeList.map(el=> el['_id']).includes(userId);
 }
 
-export { createCard, deleteCard, likeCard };
+export { createCard };

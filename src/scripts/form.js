@@ -1,3 +1,6 @@
+import { updateUserData, postCardData } from "./api";
+
+
 function handleEditFormSubmit(parametersObj) {
   const {
     evt,
@@ -11,9 +14,15 @@ function handleEditFormSubmit(parametersObj) {
   evt.preventDefault();
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
+
+  updateUserData(nameInput, jobInput).then((data) => {
+    profileTitle.textContent = data["name"];
+    profileDescription.textContent = data["about"];
+  });
   closePopup(profileEditPopup);
 }
-function handleAddFormSubmit(parametersObj) {
+
+async function handleAddFormSubmit(parametersObj) {
   const {
     evt,
     cardsContainer,
@@ -26,13 +35,16 @@ function handleAddFormSubmit(parametersObj) {
     placeAddPopup,
   } = parametersObj;
   evt.preventDefault();
-  const newCard = [
-    {
-      name: placeInput.value,
-      link: linkInput.value,
-      alt: `${placeInput.value} фото`,
-    },
-  ];
+  const newCard = await postCardData(placeInput, linkInput).then((data) => {
+    const newCard = [
+      {
+        name: data["name"],
+        link: data["link"],
+      },
+    ];
+    return newCard;
+  });
+  
   renderCards({
     cardList: newCard,
     cardsContainer,
@@ -43,4 +55,4 @@ function handleAddFormSubmit(parametersObj) {
   closePopup(placeAddPopup);
 }
 
-export { handleEditFormSubmit, handleAddFormSubmit};
+export { handleEditFormSubmit, handleAddFormSubmit };

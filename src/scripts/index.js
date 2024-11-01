@@ -1,6 +1,5 @@
 import "../pages/index.css";
-import initialCards from "./cards";
-import { createCard, deleteCard, likeCard } from "./card";
+import { createCard } from "./card";
 import {
   openPopup,
   closePopupByCross,
@@ -9,6 +8,7 @@ import {
 } from "./popup";
 import { handleEditFormSubmit, handleAddFormSubmit } from "./form";
 import { enableValidation, hideInputError } from "./validation";
+import { getUserData, getCardsData, likeCard } from "./api";
 
 const cardsContainer = document.querySelector(".places__list");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -18,6 +18,7 @@ const popups = document.querySelectorAll(".popup");
 const profileEditPopup = document.querySelector(".popup_type_edit");
 const placeAddPopup = document.querySelector(".popup_type_new-card");
 const imagePopup = document.querySelector(".popup_type_image");
+const cardDeletePopup = document.querySelector(".popup_type_delete");
 const image = document.querySelector(".popup__image");
 const imageDescription = document.querySelector(".popup__caption");
 const profileEditFormElement = document.forms["edit-profile"];
@@ -29,13 +30,23 @@ let profileDescription = document.querySelector(".profile__description");
 const newPlaceFormElement = document.forms["new-place"];
 const placeInput = newPlaceFormElement.elements["place-name"];
 const linkInput = newPlaceFormElement.elements.link;
+let userId;
 
-renderCards({
-  cardList: initialCards,
-  cardsContainer,
-  openImagePopup,
-  positionBefore: false,
-});
+getCardsData().then(data=> {
+  renderCards({
+    cardList: data,
+    cardsContainer,
+    openImagePopup,
+    positionBefore: false,
+  });
+})
+
+getUserData().then(data=> {
+  profileImage.style = `background-image: url(${data['avatar']});` ;
+  profileTitle.textContent= data['name'];
+  profileDescription.textContent=data['about'];
+  userId = data['_id']
+})
 
 popups.forEach((popup) => {
   popup.classList.add("popup_is-animated");
@@ -91,24 +102,12 @@ newPlaceFormElement.addEventListener("submit", (evt) =>
 );
 
 
-
-async function setProfileData() {
-  const profileData = await getUserData();
-  profileImage.style = `background-image: url(${profileData['avatar']});` ;
-  profileTitle.textContent= profileData['name'];
-  profileDescription.textContent=profileData['about']
-}
-setProfileData()
-getData();
-getUserData()
-
-
 function renderCards(parametersObj) {
   const { cardList, cardsContainer, openImagePopup, positionBefore } =
     parametersObj;
 
   cardList.forEach((cardData) => {
-    const card = createCard({ cardData, deleteCard, likeCard, openImagePopup });
+    const card = createCard({ cardData, cardDeletePopup, openPopup, openImagePopup, likeCard, userId });
     if (positionBefore) return cardsContainer.prepend(card);
     else return cardsContainer.append(card);
   });
@@ -121,28 +120,10 @@ function openImagePopup(link, title) {
   imageDescription.textContent = title;
 }
 
-function getData() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
-    headers: {
-      authorization: '0e54a225-fa4c-4f04-a036-c9ec4e520337'
-    }
-  })
-    .then(res => res.json())
-    .then((result) => {
-      console.log(result);
-      
-    }); 
-}
-
-function getUserData() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
-    headers: {
-      authorization: '0e54a225-fa4c-4f04-a036-c9ec4e520337'
-    }
-  })
-    .then(res => res.json())
-    .then((result) => {
-      console.log(result);
-      return result;
-    }); 
-}
+// async function renderProfileData() {
+//   const profileData = await getUserData();
+//   profileImage.style = `background-image: url(${profileData['avatar']});` ;
+//   profileTitle.textContent= profileData['name'];
+//   profileDescription.textContent=profileData['about']
+// }
+// // renderProfileData()
