@@ -87,4 +87,11 @@ async function likeCard(parametersObj) {
   
 }
 
-export { getUserData, getCardsData, updateUserData, postCardData, likeCard };
+function deleteCard(cardId) {
+  fetch(`${config['baseUrl']}/cards/${cardId}`, {
+    method: "DELETE",
+    headers: config['headers'],
+  })
+}
+
+export { getUserData, getCardsData, updateUserData, postCardData, likeCard, deleteCard };

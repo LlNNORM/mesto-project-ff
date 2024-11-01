@@ -8,7 +8,7 @@ import {
 } from "./popup";
 import { handleEditFormSubmit, handleAddFormSubmit } from "./form";
 import { enableValidation, hideInputError } from "./validation";
-import { getUserData, getCardsData, likeCard } from "./api";
+import { getUserData, getCardsData, likeCard, deleteCard } from "./api";
 
 const cardsContainer = document.querySelector(".places__list");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -107,7 +107,7 @@ function renderCards(parametersObj) {
     parametersObj;
 
   cardList.forEach((cardData) => {
-    const card = createCard({ cardData, cardDeletePopup, openPopup, openImagePopup, likeCard, userId });
+    const card = createCard({ cardData, cardDeletePopup, deleteCard, openPopup, openImagePopup, closePopup, likeCard, userId });
     if (positionBefore) return cardsContainer.prepend(card);
     else return cardsContainer.append(card);
   });
