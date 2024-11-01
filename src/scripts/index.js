@@ -30,23 +30,28 @@ let profileDescription = document.querySelector(".profile__description");
 const newPlaceFormElement = document.forms["new-place"];
 const placeInput = newPlaceFormElement.elements["place-name"];
 const linkInput = newPlaceFormElement.elements.link;
+const confirmationButtons = cardDeletePopup.querySelectorAll(
+  ".popup__button_type_confirmation"
+);
+const [confirmButton, cancelButton] = confirmationButtons;
 let userId;
+let selectedCardId;
 
-getCardsData().then(data=> {
+getCardsData().then((data) => {
   renderCards({
     cardList: data,
     cardsContainer,
     openImagePopup,
     positionBefore: false,
   });
-})
+});
 
-getUserData().then(data=> {
-  profileImage.style = `background-image: url(${data['avatar']});` ;
-  profileTitle.textContent= data['name'];
-  profileDescription.textContent=data['about'];
-  userId = data['_id']
-})
+getUserData().then((data) => {
+  profileImage.style = `background-image: url(${data["avatar"]});`;
+  profileTitle.textContent = data["name"];
+  profileDescription.textContent = data["about"];
+  userId = data["_id"];
+});
 
 popups.forEach((popup) => {
   popup.classList.add("popup_is-animated");
@@ -101,13 +106,28 @@ newPlaceFormElement.addEventListener("submit", (evt) =>
   })
 );
 
+confirmButton.addEventListener("click", () => {
+  const deletedCardId = localStorage.getItem("deletedCardId");
+  const deletedCard = document.querySelector(`[data-id="${deletedCardId}"]`);
+  deleteCard(deletedCardId);
+  deletedCard.remove();
+  closePopup(cardDeletePopup);
+});
+cancelButton.addEventListener("click", () => closePopup(cardDeletePopup));
 
 function renderCards(parametersObj) {
   const { cardList, cardsContainer, openImagePopup, positionBefore } =
     parametersObj;
 
   cardList.forEach((cardData) => {
-    const card = createCard({ cardData, cardDeletePopup, deleteCard, openPopup, openImagePopup, closePopup, likeCard, userId });
+    const card = createCard({
+      cardData,
+      cardDeletePopup,
+      openPopup,
+      openImagePopup,
+      likeCard,
+      userId,
+    });
     if (positionBefore) return cardsContainer.prepend(card);
     else return cardsContainer.append(card);
   });

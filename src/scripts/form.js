@@ -36,17 +36,11 @@ async function handleAddFormSubmit(parametersObj) {
   } = parametersObj;
   evt.preventDefault();
   const newCard = await postCardData(placeInput, linkInput).then((data) => {
-    const newCard = [
-      {
-        name: data["name"],
-        link: data["link"],
-      },
-    ];
-    return newCard;
+    return data;
   });
   
   renderCards({
-    cardList: newCard,
+    cardList: [newCard],
     cardsContainer,
     openImagePopup,
     positionBefore: true,
