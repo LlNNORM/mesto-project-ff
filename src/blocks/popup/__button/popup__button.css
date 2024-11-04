@@ -15,7 +15,7 @@
 }
 
 .popup__button_type_confirmation {
-  margin-top: 0;
+  margin-top: 33px;
 }
 
 .popup__button:not(:disabled):hover {

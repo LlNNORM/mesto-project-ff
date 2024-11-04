@@ -94,4 +94,19 @@ function deleteCard(cardId) {
   })
 }
 
-export { getUserData, getCardsData, updateUserData, postCardData, likeCard, deleteCard };
+function updateUserProfileImage(imageLinkInput) {
+  return fetch(`${config['baseUrl']}/users/me/avatar`, {
+    method: "PATCH",
+    headers: config['headers'],
+    body: JSON.stringify({
+      avatar: imageLinkInput.value,
+    }),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      return result;
+    });
+
+}
+
+export { getUserData, getCardsData, updateUserData, postCardData, likeCard, deleteCard, updateUserProfileImage };

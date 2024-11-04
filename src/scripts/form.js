@@ -1,6 +1,3 @@
-import { updateUserData, postCardData } from "./api";
-
-
 function handleEditFormSubmit(parametersObj) {
   const {
     evt,
@@ -10,16 +7,41 @@ function handleEditFormSubmit(parametersObj) {
     jobInput,
     closePopup,
     profileEditPopup,
+    profileEditSaveButton,
+    updateUserData,
   } = parametersObj;
+  
   evt.preventDefault();
+  showLoadingStatus(profileEditSaveButton, true);
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
-
   updateUserData(nameInput, jobInput).then((data) => {
     profileTitle.textContent = data["name"];
     profileDescription.textContent = data["about"];
+    showLoadingStatus(profileEditSaveButton, false);
   });
   closePopup(profileEditPopup);
+}
+
+function handleProfileImageEditFormSubmit(parametersObj) {
+  const {
+    evt,
+    profileImage,
+    profileImageLinkInput,
+    closePopup,
+    profileImageEditPopup,
+    profileImageEditSaveButton,
+    updateUserProfileImage,
+  } = parametersObj;
+  
+  evt.preventDefault();
+  showLoadingStatus(profileImageEditSaveButton, true);
+  updateUserProfileImage(profileImageLinkInput).then((data) => {
+    profileImage.style = `background-image: url(${data["avatar"]});`;
+    showLoadingStatus(profileImageEditSaveButton, false);
+    console.log(data);
+  });
+  closePopup(profileImageEditPopup);
 }
 
 async function handleAddFormSubmit(parametersObj) {
@@ -33,9 +55,15 @@ async function handleAddFormSubmit(parametersObj) {
     openImagePopup,
     closePopup,
     placeAddPopup,
+    newPlaceSaveButton,
+    postCardData,
   } = parametersObj;
+
   evt.preventDefault();
+  showLoadingStatus(newPlaceSaveButton, true);
+
   const newCard = await postCardData(placeInput, linkInput).then((data) => {
+    showLoadingStatus(newPlaceSaveButton, false);
     return data;
   });
   
@@ -49,4 +77,14 @@ async function handleAddFormSubmit(parametersObj) {
   closePopup(placeAddPopup);
 }
 
-export { handleEditFormSubmit, handleAddFormSubmit };
+function showLoadingStatus(buttonElement, isLoading) {
+  if (isLoading) {
+    buttonElement.textContent="Сохранение...";
+    buttonElement.disabled = true;
+  } else {
+    buttonElement.textContent="Сохранить";
+    buttonElement.disabled = false;
+  }
+}
+
+export { handleEditFormSubmit, handleAddFormSubmit, handleProfileImageEditFormSubmit };

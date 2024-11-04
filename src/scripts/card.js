@@ -14,12 +14,11 @@ function createCard(parametersObj) {
   let likeCounter = card.querySelector(".card__like-counter");
   const cardImage = card.querySelector(".card__image");
   const cardTitle = card.querySelector(".card__title");
-  card.dataset.id=cardData["_id"];
-  console.log(card.dataset.id)
   const likeList = cardData["likes"];
   let liked = isLiked(likeList, userId);
   const cardId = cardData["_id"];
   const cardOwner = cardData["owner"]["_id"];
+  card.dataset.id = cardId;
 
   if (cardOwner === userId) {
     deleteButton.classList.add("card__delete-button-visible");
@@ -27,10 +26,9 @@ function createCard(parametersObj) {
 
   deleteButton.addEventListener("click", () => {
     openPopup(cardDeletePopup);
-    localStorage.setItem('deletedCardId', cardId);
-    
+    localStorage.setItem("deletedCardId", cardId);
   });
-    
+
   if (liked) {
     likeButton.classList.add("card__like-button_is-active");
   }
@@ -42,6 +40,7 @@ function createCard(parametersObj) {
   cardImage.addEventListener("click", () =>
     openImagePopup(cardData["link"], cardTitle.textContent)
   );
+  
   likeButton.addEventListener("click", () =>
     likeCard({ likeButton, likeCounter, cardId, liked }).then(
       (res) => (liked = res)

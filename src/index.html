@@ -41,7 +41,7 @@
         <span class="name-input-error popup__input-error"></span> 
         <input id="description-input" type="text" name="description" class="popup__input popup__input_type_description" placeholder="Занятие" minlength="2" maxlength="200" pattern="[a-zA-Zа-яА-Я\-\s,]+" data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы" required>
         <span class="description-input-error popup__input-error"></span> 
-        <button type="submit" class="button popup__button">Сохранить</button>
+        <button type="submit" name="save-button" class="button popup__button">Сохранить</button>
       </form>
     </div>
   </div>
@@ -54,7 +54,18 @@
         <span class="place-input-error popup__input-error"></span> 
         <input id="link-input" type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
         <span class="link-input-error popup__input-error"></span> 
-        <button type="submit" class="button popup__button">Сохранить</button>
+        <button type="submit" name="save-button" class="button popup__button">Создать</button>
+      </form>
+    </div>
+  </div>
+  <div class="popup popup_type_edit-profile-image">
+    <div class="popup__content popup__content_content_profile-image">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="edit-profile-photo" novalidate>
+        <input id="link-input" type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
+        <span class="link-input-error popup__input-error"></span> 
+        <button type="submit" name="save-button" class="button popup__button">Сохранить</button>
       </form>
     </div>
   </div>
@@ -68,9 +79,8 @@
   <div class="popup popup_type_delete">
     <div class="popup__content popup__content_content_confirmation">
       <button type="button" class="popup__close"></button>
-      <h3 class="popup__title">Подтвердить удаление?</h3>
-      <button type="button" class="button popup__button popup__button_type_confirmation">Да, определенно</button>
-      <button type="button" class="button popup__button popup__button_type_confirmation">Нет, дать заднюю</button>
+      <h3 class="popup__title">Вы уверены?</h3>
+      <button type="button" class="button popup__button popup__button_type_confirmation">Да</button>
     </div>
   </div>
     
