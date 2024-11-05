@@ -66,7 +66,7 @@ getCardsData().then((data) => {
 });
 
 getUserData().then((data) => {
-  // profileImage.style = `background-image: url(${data["avatar"]});`;
+  profileImage.style = `background-image: url(${data["avatar"]});`;
   profileTitle.textContent = data["name"];
   profileDescription.textContent = data["about"];
   userId = data["_id"];
