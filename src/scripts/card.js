@@ -40,7 +40,7 @@ function createCard(parametersObj) {
   cardImage.addEventListener("click", () =>
     openImagePopup(cardData["link"], cardTitle.textContent)
   );
-  
+
   likeButton.addEventListener("click", () =>
     likeCard({ likeButton, likeCounter, cardId, liked }).then(
       (res) => (liked = res)

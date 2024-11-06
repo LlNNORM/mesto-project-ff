@@ -41,7 +41,7 @@ const profileImageEditFormElement = document.forms["edit-profile-photo"];
 const profileImageLinkInput = profileImageEditFormElement.elements["link"];
 const profileImage = document.querySelector(".profile__image");
 const profileImageEditSaveButton =
-profileImageEditFormElement.elements["save-button"];
+  profileImageEditFormElement.elements["save-button"];
 const placeAddPopup = document.querySelector(".popup_type_new-card");
 const newPlaceFormElement = document.forms["new-place"];
 const placeInput = newPlaceFormElement.elements["place-name"];

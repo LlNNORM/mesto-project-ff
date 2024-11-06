@@ -10,7 +10,7 @@ function handleEditFormSubmit(parametersObj) {
     profileEditSaveButton,
     updateUserData,
   } = parametersObj;
-  
+
   evt.preventDefault();
   showLoadingStatus(profileEditSaveButton, true);
   profileTitle.textContent = nameInput.value;
@@ -33,7 +33,7 @@ function handleProfileImageEditFormSubmit(parametersObj) {
     profileImageEditSaveButton,
     updateUserProfileImage,
   } = parametersObj;
-  
+
   evt.preventDefault();
   showLoadingStatus(profileImageEditSaveButton, true);
   updateUserProfileImage(profileImageLinkInput).then((data) => {
@@ -66,7 +66,7 @@ async function handleAddFormSubmit(parametersObj) {
     showLoadingStatus(newPlaceSaveButton, false);
     return data;
   });
-  
+
   renderCards({
     cardList: [newCard],
     cardsContainer,
@@ -79,12 +79,16 @@ async function handleAddFormSubmit(parametersObj) {
 
 function showLoadingStatus(buttonElement, isLoading) {
   if (isLoading) {
-    buttonElement.textContent="Сохранение...";
+    buttonElement.textContent = "Сохранение...";
     buttonElement.disabled = true;
   } else {
-    buttonElement.textContent="Сохранить";
+    buttonElement.textContent = "Сохранить";
     buttonElement.disabled = false;
   }
 }
 
-export { handleEditFormSubmit, handleAddFormSubmit, handleProfileImageEditFormSubmit };
+export {
+  handleEditFormSubmit,
+  handleAddFormSubmit,
+  handleProfileImageEditFormSubmit,
+};
