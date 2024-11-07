@@ -25,11 +25,11 @@
   border-bottom-color: red;
 }
 
-.popup__input-error {
+.popup__error {
   display: none;
 }
 
-.popup__input-error_active{
+.popup__error_visible{
   display: block;
   color: red;
 }

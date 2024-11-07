@@ -39,7 +39,6 @@ function handleProfileImageEditFormSubmit(parametersObj) {
   updateUserProfileImage(profileImageLinkInput).then((data) => {
     profileImage.style = `background-image: url(${data["avatar"]});`;
     showLoadingStatus(profileImageEditSaveButton, false);
-    console.log(data);
   });
   closePopup(profileImageEditPopup);
 }

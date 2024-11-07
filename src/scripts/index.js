@@ -11,7 +11,7 @@ import {
   handleAddFormSubmit,
   handleProfileImageEditFormSubmit,
 } from "./form";
-import { enableValidation, hideInputError } from "./validation";
+import { enableValidation, clearValidation } from "./validation";
 import {
   getUserData,
   getCardsData,
@@ -55,6 +55,14 @@ const confirmButton = cardDeletePopup.querySelector(
   ".popup__button_type_confirmation"
 );
 let userId;
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 getCardsData().then((data) => {
   renderCards({
@@ -77,30 +85,25 @@ popups.forEach((popup) => {
   popup.addEventListener("mousedown", closePopupByOverlay);
 });
 
+enableValidation(validationConfig);
+
 profileEditButton.addEventListener("click", () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
-  [nameInput, jobInput].forEach((inputElement) => {
-    hideInputError(profileEditFormElement, inputElement);
-  });
+  clearValidation(profileEditFormElement, validationConfig);
   openPopup(profileEditPopup);
-  enableValidation(profileEditFormElement);
 });
 
 profileImage.addEventListener("click", () => {
   profileImageEditFormElement.reset();
-  hideInputError(profileImageEditFormElement, profileImageLinkInput);
+  clearValidation(profileImageEditFormElement, validationConfig);
   openPopup(profileImageEditPopup);
-  enableValidation(profileImageEditFormElement);
 });
 
 placesAddButton.addEventListener("click", () => {
   newPlaceFormElement.reset();
-  [placeInput, linkInput].forEach((inputElement) => {
-    hideInputError(newPlaceFormElement, inputElement);
-  });
+  clearValidation(newPlaceFormElement, validationConfig);
   openPopup(placeAddPopup);
-  enableValidation(newPlaceFormElement);
 });
 
 popupCloseButtons.forEach((button) =>
