@@ -72,14 +72,18 @@ function likeCard(parametersObj) {
   let { liked } = parametersObj;
   if (!liked) {
     addLike(cardId)
-      .then((res) => (likeCounter.textContent = res["likes"].length))
+      .then((res) => {
+        likeCounter.textContent = res["likes"].length;
+        likeButton.classList.add("card__like-button_is-active");
+      })
       .catch((err) => console.log(err));
-    likeButton.classList.add("card__like-button_is-active");
   } else {
     deleteLike(cardId)
-      .then((res) => (likeCounter.textContent = res["likes"].length))
+      .then((res) => {
+        likeCounter.textContent = res["likes"].length;
+        likeButton.classList.remove("card__like-button_is-active");
+      })
       .catch((err) => console.log(err));
-    likeButton.classList.remove("card__like-button_is-active");
   }
   return !liked;
 }
