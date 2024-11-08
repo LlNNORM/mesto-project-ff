@@ -9,11 +9,7 @@ const config = {
 function getUserData() {
   return fetch(`${config["baseUrl"]}/users/me`, {
     headers: config["headers"],
-  })
-    .then((res) => checkResponse(res))
-    .then((result) => {
-      return result;
-    });
+  }).then((res) => checkResponse(res));
 }
 
 function getCardsData() {

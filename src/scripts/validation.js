@@ -40,7 +40,6 @@ function clearValidation(formElement, validationConfig) {
     hideInputError(formElement, inputElement, inputErrorClass, errorClass);
   });
   toggleButtonState(inputList, buttonElement, inactiveButtonClass);
-  
 }
 
 function isValid(formElement, inputElement, inputErrorClass, errorClass) {

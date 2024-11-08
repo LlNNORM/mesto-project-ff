@@ -84,12 +84,14 @@ function handleAddFormSubmit(parametersObj) {
     .catch((err) => console.log(err))
     .finally(() => {
       showLoadingStatus(newPlaceSaveButton, false, originalText);
-    });;
-
-  
+    });
 }
 
-function showLoadingStatus(buttonElement, isLoading, originalText='Сохранить') {
+function showLoadingStatus(
+  buttonElement,
+  isLoading,
+  originalText = "Сохранить"
+) {
   if (isLoading) {
     buttonElement.textContent = "Сохранение...";
     buttonElement.disabled = true;

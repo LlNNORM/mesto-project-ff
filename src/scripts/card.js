@@ -21,18 +21,13 @@ function createCard(parametersObj) {
   const cardOwner = cardData["owner"]["_id"];
   card.dataset.id = cardId;
 
-  if (cardOwner === userId) {
-    deleteButton.classList.add("card__delete-button-visible");
-  }
+  showDeleteButton(cardOwner, userId, deleteButton);
+  showLike(liked, likeButton);
 
   deleteButton.addEventListener("click", () => {
     openPopup(cardDeletePopup);
     localStorage.setItem("deletedCardId", cardId);
   });
-
-  if (liked) {
-    likeButton.classList.add("card__like-button_is-active");
-  }
 
   cardImage.src = cardData["link"];
   cardImage.alt = `${cardData["name"]} фото`;
@@ -43,25 +38,45 @@ function createCard(parametersObj) {
   );
 
   likeButton.addEventListener("click", () => {
-   liked=likeCard({liked, cardId, likeButton, likeCounter, addLike, deleteLike});
+    liked = likeCard({
+      liked,
+      cardId,
+      likeButton,
+      likeCounter,
+      addLike,
+      deleteLike,
+    });
   });
   return card;
+}
+
+function showDeleteButton(cardOwner, userId, deleteButton) {
+  if (cardOwner === userId) {
+    deleteButton.classList.add("card__delete-button-visible");
+  }
 }
 
 function isLiked(likeList, userId) {
   return likeList.map((el) => el["_id"]).includes(userId);
 }
 
+function showLike(liked, likeButton) {
+  if (liked) {
+    likeButton.classList.add("card__like-button_is-active");
+  }
+}
+
 function likeCard(parametersObj) {
-  const { cardId, likeButton, likeCounter, addLike, deleteLike} = parametersObj;
-  let {liked} = parametersObj;
+  const { cardId, likeButton, likeCounter, addLike, deleteLike } =
+    parametersObj;
+  let { liked } = parametersObj;
   if (!liked) {
     addLike(cardId)
       .then((res) => (likeCounter.textContent = res["likes"].length))
       .catch((err) => console.log(err));
     likeButton.classList.add("card__like-button_is-active");
   } else {
-     deleteLike(cardId)
+    deleteLike(cardId)
       .then((res) => (likeCounter.textContent = res["likes"].length))
       .catch((err) => console.log(err));
     likeButton.classList.remove("card__like-button_is-active");
