@@ -10,29 +10,16 @@ function getUserData() {
   return fetch(`${config["baseUrl"]}/users/me`, {
     headers: config["headers"],
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then((res) => checkResponse(res))
     .then((result) => {
       return result;
-    })
-    .catch((err) => console.log(err));
+    });
 }
 
 function getCardsData() {
   return fetch(`${config["baseUrl"]}/cards`, {
     headers: config["headers"],
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
 }
 
 function updateUserData(nameInput, jobInput) {
@@ -43,14 +30,7 @@ function updateUserData(nameInput, jobInput) {
       name: nameInput.value,
       about: jobInput.value,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
 }
 
 function postCardData(placeInput, linkInput) {
@@ -61,74 +41,28 @@ function postCardData(placeInput, linkInput) {
       name: placeInput.value,
       link: linkInput.value,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
 }
 
-async function likeCard(parametersObj) {
-  const { likeButton, likeCounter, cardId } = parametersObj;
-  let { liked } = parametersObj;
+function addLike(cardId) {
+  return fetch(`${config["baseUrl"]}/cards/likes/${cardId}`, {
+    method: "PUT",
+    headers: config["headers"],
+  }).then((res) => checkResponse(res));
+}
 
-  if (!liked) {
-    likeCounter.textContent = await fetch(
-      `${config["baseUrl"]}/cards/likes/${cardId}`,
-      {
-        method: "PUT",
-        headers: config["headers"],
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      .then((res) => {
-        return res["likes"].length;
-      })
-      .catch((err) => console.log(err));
-    likeButton.classList.add("card__like-button_is-active");
-    return !liked;
-  } else {
-    likeCounter.textContent = await fetch(
-      `${config["baseUrl"]}/cards/likes/${cardId}`,
-      {
-        method: "DELETE",
-        headers: config["headers"],
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      .then((res) => {
-        return res["likes"].length;
-      })
-      .catch((err) => console.log(err));
-    likeButton.classList.remove("card__like-button_is-active");
-    return !liked;
-  }
+function deleteLike(cardId) {
+  return fetch(`${config["baseUrl"]}/cards/likes/${cardId}`, {
+    method: "DELETE",
+    headers: config["headers"],
+  }).then((res) => checkResponse(res));
 }
 
 function deleteCard(cardId) {
-  fetch(`${config["baseUrl"]}/cards/${cardId}`, {
+  return fetch(`${config["baseUrl"]}/cards/${cardId}`, {
     method: "DELETE",
     headers: config["headers"],
-  })
-    .then((res) => {
-      if (!res.ok) {
-        return Promise.reject(`Ошибка: ${res.status}`);
-      }
-    })
-    .catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
 }
 
 function updateUserProfileImage(imageLinkInput) {
@@ -138,14 +72,14 @@ function updateUserProfileImage(imageLinkInput) {
     body: JSON.stringify({
       avatar: imageLinkInput.value,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
+}
+
+function checkResponse(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка ${res.status}`);
 }
 
 export {
@@ -153,7 +87,8 @@ export {
   getCardsData,
   updateUserData,
   postCardData,
-  likeCard,
   deleteCard,
   updateUserProfileImage,
+  addLike,
+  deleteLike,
 };

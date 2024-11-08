@@ -15,19 +15,20 @@ import { enableValidation, clearValidation } from "./validation";
 import {
   getUserData,
   getCardsData,
-  likeCard,
   deleteCard,
   updateUserData,
   postCardData,
   updateUserProfileImage,
+  addLike,
+  deleteLike,
 } from "./api";
 
 const cardsContainer = document.querySelector(".places__list");
 const profileEditButton = document.querySelector(".profile__edit-button");
 const placesAddButton = document.querySelector(".profile__add-button");
 const popupCloseButtons = document.querySelectorAll(".popup__close");
-let profileTitle = document.querySelector(".profile__title");
-let profileDescription = document.querySelector(".profile__description");
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
 const popups = document.querySelectorAll(".popup");
 const profileEditPopup = document.querySelector(".popup_type_edit");
 const profileEditFormElement = document.forms["edit-profile"];
@@ -64,21 +65,22 @@ const validationConfig = {
   errorClass: "popup__error_visible",
 };
 
-getCardsData().then((data) => {
-  renderCards({
-    cardList: data,
-    cardsContainer,
-    openImagePopup,
-    positionBefore: false,
+Promise.all([getUserData(), getCardsData()])
+  .then(([userData, cardsData]) => {
+    profileImage.style = `background-image: url(${userData["avatar"]});`;
+    profileTitle.textContent = userData["name"];
+    profileDescription.textContent = userData["about"];
+    userId = userData["_id"];
+    renderCards({
+      cardList: cardsData,
+      cardsContainer,
+      openImagePopup,
+      positionBefore: false,
+    });
+  })
+  .catch((err) => {
+    console.log(err);
   });
-});
-
-getUserData().then((data) => {
-  profileImage.style = `background-image: url(${data["avatar"]});`;
-  profileTitle.textContent = data["name"];
-  profileDescription.textContent = data["about"];
-  userId = data["_id"];
-});
 
 popups.forEach((popup) => {
   popup.classList.add("popup_is-animated");
@@ -155,9 +157,12 @@ newPlaceFormElement.addEventListener("submit", (evt) =>
 confirmButton.addEventListener("click", () => {
   const deletedCardId = localStorage.getItem("deletedCardId");
   const deletedCard = document.querySelector(`[data-id="${deletedCardId}"]`);
-  deleteCard(deletedCardId);
-  deletedCard.remove();
-  closePopup(cardDeletePopup);
+  deleteCard(deletedCardId)
+    .then(() => {
+      deletedCard.remove();
+      closePopup(cardDeletePopup);
+    })
+    .catch((err) => console.log(err));
 });
 
 function renderCards(parametersObj) {
@@ -170,8 +175,9 @@ function renderCards(parametersObj) {
       cardDeletePopup,
       openPopup,
       openImagePopup,
-      likeCard,
       userId,
+      addLike,
+      deleteLike,
     });
     if (positionBefore) return cardsContainer.prepend(card);
     else return cardsContainer.append(card);
@@ -184,11 +190,3 @@ function openImagePopup(link, title) {
   image.alt = `${title} фото`;
   imageDescription.textContent = title;
 }
-
-// async function renderProfileData() {
-//   const profileData = await getUserData();
-//   profileImage.style = `background-image: url(${profileData['avatar']});` ;
-//   profileTitle.textContent= profileData['name'];
-//   profileDescription.textContent=profileData['about']
-// }
-// // renderProfileData()

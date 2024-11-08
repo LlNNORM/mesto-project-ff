@@ -15,12 +15,16 @@ function handleEditFormSubmit(parametersObj) {
   showLoadingStatus(profileEditSaveButton, true);
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
-  updateUserData(nameInput, jobInput).then((data) => {
-    profileTitle.textContent = data["name"];
-    profileDescription.textContent = data["about"];
-    showLoadingStatus(profileEditSaveButton, false);
-  });
-  closePopup(profileEditPopup);
+  updateUserData(nameInput, jobInput)
+    .then((data) => {
+      profileTitle.textContent = data["name"];
+      profileDescription.textContent = data["about"];
+      closePopup(profileEditPopup);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      showLoadingStatus(profileEditSaveButton, false);
+    });
 }
 
 function handleProfileImageEditFormSubmit(parametersObj) {
@@ -36,14 +40,18 @@ function handleProfileImageEditFormSubmit(parametersObj) {
 
   evt.preventDefault();
   showLoadingStatus(profileImageEditSaveButton, true);
-  updateUserProfileImage(profileImageLinkInput).then((data) => {
-    profileImage.style = `background-image: url(${data["avatar"]});`;
-    showLoadingStatus(profileImageEditSaveButton, false);
-  });
-  closePopup(profileImageEditPopup);
+  updateUserProfileImage(profileImageLinkInput)
+    .then((data) => {
+      profileImage.style = `background-image: url(${data["avatar"]});`;
+      closePopup(profileImageEditPopup);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      showLoadingStatus(profileImageEditSaveButton, false);
+    });
 }
 
-async function handleAddFormSubmit(parametersObj) {
+function handleAddFormSubmit(parametersObj) {
   const {
     evt,
     cardsContainer,
@@ -59,29 +67,34 @@ async function handleAddFormSubmit(parametersObj) {
   } = parametersObj;
 
   evt.preventDefault();
+  const originalText = newPlaceSaveButton.textContent;
   showLoadingStatus(newPlaceSaveButton, true);
 
-  const newCard = await postCardData(placeInput, linkInput).then((data) => {
-    showLoadingStatus(newPlaceSaveButton, false);
-    return data;
-  });
+  postCardData(placeInput, linkInput)
+    .then((data) => {
+      renderCards({
+        cardList: [data],
+        cardsContainer,
+        openImagePopup,
+        positionBefore: true,
+      });
+      newPlaceFormElement.reset();
+      closePopup(placeAddPopup);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      showLoadingStatus(newPlaceSaveButton, false, originalText);
+    });;
 
-  renderCards({
-    cardList: [newCard],
-    cardsContainer,
-    openImagePopup,
-    positionBefore: true,
-  });
-  newPlaceFormElement.reset();
-  closePopup(placeAddPopup);
+  
 }
 
-function showLoadingStatus(buttonElement, isLoading) {
+function showLoadingStatus(buttonElement, isLoading, originalText='Сохранить') {
   if (isLoading) {
     buttonElement.textContent = "Сохранение...";
     buttonElement.disabled = true;
   } else {
-    buttonElement.textContent = "Сохранить";
+    buttonElement.textContent = originalText;
     buttonElement.disabled = false;
   }
 }

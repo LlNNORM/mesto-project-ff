@@ -4,8 +4,9 @@ function createCard(parametersObj) {
     cardDeletePopup,
     openPopup,
     openImagePopup,
-    likeCard,
     userId,
+    addLike,
+    deleteLike,
   } = parametersObj;
   const cardTemplate = document.querySelector("#card-template").content;
   const card = cardTemplate.querySelector(".card").cloneNode(true);
@@ -41,16 +42,31 @@ function createCard(parametersObj) {
     openImagePopup(cardData["link"], cardTitle.textContent)
   );
 
-  likeButton.addEventListener("click", () =>
-    likeCard({ likeButton, likeCounter, cardId, liked }).then(
-      (res) => (liked = res)
-    )
-  );
+  likeButton.addEventListener("click", () => {
+   liked=likeCard({liked, cardId, likeButton, likeCounter, addLike, deleteLike});
+  });
   return card;
 }
 
 function isLiked(likeList, userId) {
   return likeList.map((el) => el["_id"]).includes(userId);
+}
+
+function likeCard(parametersObj) {
+  const { cardId, likeButton, likeCounter, addLike, deleteLike} = parametersObj;
+  let {liked} = parametersObj;
+  if (!liked) {
+    addLike(cardId)
+      .then((res) => (likeCounter.textContent = res["likes"].length))
+      .catch((err) => console.log(err));
+    likeButton.classList.add("card__like-button_is-active");
+  } else {
+     deleteLike(cardId)
+      .then((res) => (likeCounter.textContent = res["likes"].length))
+      .catch((err) => console.log(err));
+    likeButton.classList.remove("card__like-button_is-active");
+  }
+  return !liked;
 }
 
 export { createCard };
